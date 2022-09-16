@@ -25,7 +25,9 @@ def to_cumulative(stream: list):
   streamDf['Notional'] = streamDf['Quantity']*streamDf['Price']
   streamDf['Cum_Quantity'] = streamDf.groupby(['Ticker'])['Quantity'].cumsum(axis = 0)
   streamDf['Cum_Notional'] = streamDf.groupby(['Ticker'])['Notional'].cumsum(axis = 0)
-  print(streamDf)
+  streamDf = streamDf.sort_values('Cum_Quantity').drop_duplicates(['Timestamp', 'Ticker'], keep='last')
+  streamDf = streamDf.sort_values(['Timestamp','Ticker']).reset_index(drop=True)
+
   for j in timeStamps:
         temp = streamDf.loc[streamDf['Timestamp'] == j].to_numpy()
         string_out = to_timestamp(j)
